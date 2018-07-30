@@ -4,12 +4,14 @@ import menus from './menus';
 import MenuBar from './components/MenuBar';
 import { Layout, Icon } from 'antd';
 import Routers from '../../router';
+import Tabs from './components/Tabs';
 const { Header, Sider, Content } = Layout;
 
 class Portal extends React.Component {
     state = {
         collapsed: false,
-        current: 'home',
+        selected: [],
+        tabs: [],
     };
 
     toggle = () => {
@@ -22,7 +24,41 @@ class Portal extends React.Component {
         console.log(e);
     }
     componentDidMount() {
-        console.log(this.state);
+        this.initSelected(this.props);
+    }
+
+    componentWillReceiveProps(nextProps: any) {
+        this.initSelected(nextProps);   
+    }
+    initSelected(props: any) {
+        let selected = '';
+        let tabs = new Array();
+        menus.forEach(menu => {
+            if (props.location.pathname.includes(menu.path)) {
+                tabs.push(menu);
+                menu.children.forEach(child => {
+                    if (props.location.pathname.includes(child.path)) {
+                        tabs.push(child);
+                    }
+                });
+            }
+            if (menu.path === props.location.pathname) {
+                selected = menu.key;
+            } else {
+                menu.children.forEach(child => {
+                    if (child.path === props.location.pathname) {
+                        selected = child.key;
+                    }
+                });
+            }
+        });
+        const dashboard = [{
+            key: 'dashboard',
+            path: '/admin/dashboard',
+            title: 'Dashboard',
+        }];
+        tabs = dashboard.concat(tabs);
+        this.setState({selected: [selected], tabs});
     }
     render() {
         return (
@@ -40,19 +76,28 @@ class Portal extends React.Component {
                                 theme="dark"
                                 onClick={this.handleClick}
                                 style={{ width: '100%', height: '100%' }}
-                                defaultSelectedKeys={[this.state.current]}
+                                selectedKeys={this.state.selected}
                                 mode="inline"
                             />
                         </div>
                     </Sider>
                 
                     <Layout>
-                        <Header style={{ height: 50, background: '#fff', padding: 0 }}>
+                        <Header 
+                            style={{ 
+                                height: 50, 
+                                background: '#fff', 
+                                padding: 0, 
+                                lineHeight: '50px', 
+                                display: 'flex' 
+                            }}
+                        >
                         <Icon
                             className="trigger"
                             type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                             onClick={this.toggle}
                         />
+                        <Tabs style={{lineHeight: '50px'}} tabs={this.state.tabs} />
                         </Header>
                         <Content style={{ minHeight: 280 }}>
                             <Routers /> 
