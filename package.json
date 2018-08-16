@@ -30,6 +30,6 @@
     "react-app-rewired": "1.4.1",
     "redux-devtools": "3.4.1",
     "ts-import-plugin": "1.4.3",
-    "typescript": "2.7.1"
+    "typescript": "2.8.3"
   }
 }
