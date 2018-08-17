@@ -47,7 +47,7 @@ class MenuBar extends React.Component<MenuBarProps> {
         return (
             <Menu {...props}>   
                 {menus.map(item => {
-                    return item.children && item.children.length ? 
+                    return item.hidden ? null : item.children && item.children.length ? 
                     this.RenderSubMenu(item) : this.RenderMenuItem(item);
                 })}
             </Menu>
