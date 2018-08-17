@@ -1,12 +1,21 @@
-import Home from "../views/home";
-import Test from "../views/test";
-import More from "../views/more";
+import menus from "./menus";
 
-const routes = [
-  {path: '/admin/home', component: Home},
-  {path: '/admin/test', component: Test},
-  {path: '/admin/more/test1', component: More.Test1},
-  {path: '/admin/more/test2', component: More.Test2},
-]
+const getRoutes = (menu, data) => {
+  let arr = data.length ? data : [];
+  let children = [];
+  let hasChild = false;
+  menu.forEach(item => {
+      if (item.children && item.children.length) {
+          hasChild = true;
+          children = children.concat(item.children);
+      } else {
+         arr.push(item);
+      }
+  });
+  return hasChild ? getRoutes(children, arr) : arr;
+}
 
-export default routes;
+const Routes = getRoutes(menus, []);
+
+
+export default Routes;
