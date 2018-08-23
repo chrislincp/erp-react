@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Breadcrumb } from 'antd';
-import { Link } from 'react-router-dom';
 
 interface TabsProps {
-  style: any;
   tabs: any[];
+  style: any;
   [propName: string]: any;
 
 }
@@ -18,13 +17,9 @@ class Tabs extends React.Component<TabsProps> {
     const {tabs, style} = this.props;
     return (
       <Breadcrumb style={style} >
-        {tabs.map((menu, index) => (
-          <Breadcrumb.Item key={menu.key}>
-          {index === tabs.length - 1 ? 
-          <span>{menu.title}</span> : 
-          <Link to={menu.path}>
-                <span>{menu.title}</span>
-            </Link>}
+        {tabs.map(tab => (
+          <Breadcrumb.Item key={tab.key}>
+            {tab.title}
           </Breadcrumb.Item>
         ))}
       </Breadcrumb>

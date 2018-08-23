@@ -8,7 +8,7 @@ import Utils from './utils';
 
 class App extends React.Component {
     componentDidMount() {
-        Utils.auth ? window.location.replace('/#/admin/dashboard') : 
+        Utils.auth() ? window.location.replace('/#/admin/dashboard') : 
         window.location.replace('/#/login');
     }
     render() {
