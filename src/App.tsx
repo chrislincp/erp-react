@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { HashRouter as Router, Route, Switch, } from 'react-router-dom';
+import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Portal from './views/portal';
 import NotFound from './views/NotFound';
 import Login from './views/login';
 import Utils from './utils';
-
+import './mock';
 class App extends React.Component {
     componentDidMount() {
         Utils.auth() ? window.location.replace('/#/admin/dashboard') : 
