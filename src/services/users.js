@@ -13,5 +13,9 @@ const UsersService = {
     const url = '/users/add';
     return Post(url, params);
   },
+  deleteUser(params) {
+    const url = '/users/delete';
+    return Post(url, params);
+  },
 }
 export default UsersService;

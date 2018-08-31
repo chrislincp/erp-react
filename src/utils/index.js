@@ -17,6 +17,9 @@ const Utils = {
     });
     return Object.keys(menu).length ? menu : this.recursionKeys(key, children);
   },
+  trim(val) {
+      return val.replace(/\s+/g, '');     
+  }
 }
 
 export default Utils;

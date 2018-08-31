@@ -1,8 +1,8 @@
-import Test from "../views/test";
 import More from "../views/more";
 import Dashboard from "../views/dashboard";
 import Login from "../views/login";
 import NotFound from "../views/NotFound";
+import Table from "../views/components/table";
 const menus  = [
     {
         key: 'login',
@@ -25,13 +25,20 @@ const menus  = [
         path: '/admin/dashboard',
         component: Dashboard,
     },
-    { 
-        key:'test', 
-        title: '测试', 
+    {
+        key: 'components',
+        title: '组件',
         icon: 'appstore',
-        path: '/admin/test',
-        component: Test,
-    },
+        path: '/admin/components',
+        children: [
+            { 
+                key:'table', 
+                title: 'Table', 
+                path: '/admin/components/table',
+                component: Table,
+            },
+        ]
+    }, 
     { 
         key:'more', 
         title: '更多', 
