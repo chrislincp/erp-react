@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@rematch/core": "^1.0.0-beta.4",
     "antd": "3.2.0",
     "axios": "0.17.1",
     "mockjs": "1.0.1-beta3",
@@ -11,8 +12,7 @@
     "react-dom": "16.2.0",
     "react-redux": "5.0.6",
     "react-router-dom": "4.2.2",
-    "react-scripts-ts": "2.13.0",
-    "redux": "3.7.2"
+    "react-scripts-ts": "2.13.0"
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts-ts",
