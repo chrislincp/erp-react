@@ -2,7 +2,8 @@ import More from "../views/more";
 import Dashboard from "../views/dashboard";
 import Login from "../views/login";
 import NotFound from "../views/NotFound";
-import Table from "../views/components/table";
+import { Table } from '../views/components';
+
 const menus  = [
     {
         key: 'login',
