@@ -4,7 +4,7 @@ const userInfo = {
   id: 1,
   username: 'admin',
   name: 'LinCP',
-  avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
+  avatar: 'https://avatars2.githubusercontent.com/u/22828515?s=40&v=4',
   github: 'https://github.com/chrislincp',
 }
 
