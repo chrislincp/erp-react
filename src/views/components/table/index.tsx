@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { UsersService } from '../../../services';
-import { Layout, Table, message, Button, Form, Input, Modal, Radio, DatePicker, InputNumber, Pagination } from 'antd';
+import { Layout, Table, message, Button, Form, Input, Modal, Pagination } from 'antd';
 import Utils from '../../../utils';
+import Detail from './modal/detail';
+import store from '../../../store';
 import * as moment from 'moment';
 
 const { Header, Content, Footer } = Layout;
@@ -142,22 +144,20 @@ export default class UsersTable extends React.Component<UsersTableProps, any> {
     }
 
     openDetail(row: object, type: string) {
-        this.setState({ visible: true, detail: Object.assign({}, row), detailType: type });
+        const detail = Object.assign({}, row);
+        store.dispatch.table.setDetail(detail);
+        this.onChangeVisible(true);
+        this.setState({ detailType: type });
     }
-    
-    onChangeDetail(key: string, value: any) {
-        console.log(key, value);
-        let { detail } = this.state;
-        detail[key] = value;
-        this.setState({ detail });
+    onChangeVisible(val: boolean) {
+        this.setState({visible: val});
     }
 
     save() {
         this.setState({
             saveLoading: true,
         });
-        const params = Object.assign({}, this.state.detail);
-        console.log(params);
+        const params = Object.assign({}, store.getState().table.detail);
         let service = '';
         switch (this.state.detailType) {
             case 'add':
@@ -170,7 +170,6 @@ export default class UsersTable extends React.Component<UsersTableProps, any> {
             break;
         }
         UsersService[service](params).then((res: any) => {
-            console.log(res);
             this.setState({
                 saveLoading: false,
                 visible: false,
@@ -189,27 +188,14 @@ export default class UsersTable extends React.Component<UsersTableProps, any> {
             name: '',
             sex: 1,
             age: 0,
-            birth: '',
+            birth: moment().format('YYYY-MM-DD'),
             addr: '',
         };
         this.openDetail(row, 'add');
     }
 
-    addUser() {
-        const params = {
-            name: '林昌鹏',
-            age: 24,
-            sex: 1,
-            birth: '1994-03-15',
-            addr: '浙江 温州 乐清'
-        };
-        UsersService.addUser(params).then(res => {
-            console.log(res);
-        });
-    }
-
     render() {
-        const {page, size, total, loading, data, detail, visible, saveLoading} = this.state;
+        const {page, size, total, loading, data, saveLoading, visible} = this.state;
         const column = [
             {
                 title: '姓名', 
@@ -238,18 +224,6 @@ export default class UsersTable extends React.Component<UsersTableProps, any> {
                 render: (text: any, record: any, index: number) => this.convertTable('opreate', text, record, index),
             },
         ];
-
-        const formItemLayout = {
-            labelCol: {
-              xs: { span: 24 },
-              sm: { span: 4 },
-            },
-            wrapperCol: {
-              xs: { span: 24 },
-              sm: { span: 20 },
-            },
-          };
-
         return (
             <Layout style={{display: 'flex'}}>
                 <Header
@@ -285,6 +259,9 @@ export default class UsersTable extends React.Component<UsersTableProps, any> {
                         dataSource={data}
                         columns={column}
                         pagination={false}
+                        locale={{
+                            emptyText: '暂无数据',
+                        }}
                         onRow={(record) => {
                             return {
                               onDoubleClick: () => this.openDetail(record, 'edit'),
@@ -301,48 +278,21 @@ export default class UsersTable extends React.Component<UsersTableProps, any> {
                         pageSize={size}
                         onShowSizeChange={(current, pageSize) => this.onChangeSize(current, pageSize)}
                         onChange={(pageNumber) => this.onChangePage(pageNumber)}
+                        showTotal={(tot) => `共${tot}条`}
                     />
                 </Footer>
             
                 <Modal
                     visible={visible} 
-                    onCancel={() => this.setState({ visible: false })}
+                    destroyOnClose={true}
+                    onCancel={() => this.onChangeVisible(false)}
                     title="详情"
                     cancelText="取消"
                     okText="保存"
                     onOk={() => this.save()}
                     confirmLoading={saveLoading}
                 >
-                    <Form>
-                        <Form.Item label="姓名" {...formItemLayout}>
-                            <Input value={detail.name} onChange={e => this.onChangeDetail('name', e.target.value)} />
-                        </Form.Item>
-                        <Form.Item label="性别" {...formItemLayout}>
-                            <Radio.Group value={detail.sex} onChange={e => this.onChangeDetail('sex', e.target.value)}>
-                                <Radio value={1}>男</Radio>
-                                <Radio value={0}>女</Radio>
-                            </Radio.Group>
-                        </Form.Item>
-                        <Form.Item label="生日" {...formItemLayout}>
-                            <DatePicker 
-                                value={detail.birth ? moment(detail.birth, 'YYYY-MM-DD') : detail.birth}
-                                format="YYYY-MM-DD"
-                                onChange={(date, dateString) => this.onChangeDetail('birth', dateString)}
-                            />
-                        </Form.Item>
-                        <Form.Item label="年龄" {...formItemLayout}>
-                            <InputNumber 
-                                value={detail.age} 
-                                onChange={num => this.onChangeDetail('age', num)}
-                            />
-                        </Form.Item>
-                        <Form.Item label="地址" {...formItemLayout}>
-                            <Input.TextArea 
-                                value={detail.addr} 
-                                onChange={e => this.onChangeDetail('addr', e.target.value)}
-                            />
-                        </Form.Item>
-                    </Form>
+                    <Detail />
                 </Modal>
             </Layout>
         );

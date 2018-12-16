@@ -2,11 +2,12 @@ import * as React from 'react';
 import './index.css';
 import menus from '../../router/menus';
 import MenuBar from './components/MenuBar';
-import { Layout, Icon, Dropdown, Menu, Avatar, Modal } from 'antd';
+import { Layout, Icon, Dropdown, Menu, Avatar, Modal, message } from 'antd';
 import Routers from '../../router';
 import Tabs from './components/Tabs';
 import Utils from '../../utils';
 import UserInfo from './components/UserInfo';
+import store from '../../store';
 const { Header, Sider, Content } = Layout;
 
 class Portal extends React.Component {
@@ -15,6 +16,7 @@ class Portal extends React.Component {
         selected: ['dashboard'],
         tabs: [{key: 'dashboard', title: '首页'}],
         visible: false,
+        userIofo: store.getState().user.userInfo,
     };
 
     toggle = () => {
@@ -43,9 +45,9 @@ class Portal extends React.Component {
         return (
             <Menu onClick={e => this.avatarClick(e)}>
                 <Menu.Item 
-                    key="user"
+                    key="github"
                 >
-                    个人中心
+                    github
                 </Menu.Item>
                 <Menu.Divider />
                 <Menu.Item key="logout">退出登录</Menu.Item>
@@ -55,15 +57,24 @@ class Portal extends React.Component {
 
     avatarClick(e: any) {
         switch (e.key) {
-            case 'user':
-            this.setState({ visible: true });
+            case 'github':
+            window.open(this.state.userIofo.github);
             break;
             case 'logout':
-            const props: any = this.props;
-            props.history.replace('/login');
+            Modal.confirm({
+                title: '退出登录',
+                content: '确认退出登录？',
+                okText: '退出',
+                cancelText: '取消',
+                onOk: () => {
+                    Utils.logout();
+                    message.success('退出登录');
+                    const props: any = this.props;
+                    props.history.replace('/login');
+                }
+            });
             break;
             default:
-
             break;
         }
     }
@@ -121,12 +132,12 @@ class Portal extends React.Component {
                             <Dropdown 
                                 overlay={this.avatarMenu()}
                                 placement="bottomCenter"
-                            >
-                                <Avatar size="default" icon="user" />
+                            >   
+                                <Avatar size="default" icon="user" src={this.state.userIofo.avatar || ''} />
                             </Dropdown>
                         </div>
                         </Header>
-                        <Content style={{ minHeight: 280 }}>
+                        <Content className="portal" style={{ overflowY: 'scroll' }}>
                             <Routers /> 
                         </Content>
                     </Layout>

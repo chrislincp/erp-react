@@ -6,10 +6,17 @@ import NotFound from './views/NotFound';
 import Login from './views/login';
 import Utils from './utils';
 import './mock';
+import store from './store';
 class App extends React.Component {
-    componentDidMount() {
-        Utils.auth() ? window.location.replace('/#/admin/dashboard') : 
-        window.location.replace('/#/login');
+    constructor(props: any) {
+        super(props);
+        if (Utils.auth()) {
+            let userInfo = sessionStorage.getItem('userInfo') || '';
+            store.dispatch.user.setUserInfo(JSON.parse(userInfo));
+            window.location.replace('/#/admin/dashboard');
+        } else {
+            window.location.replace('/#/login');
+        }
     }
     render() {
         return (
